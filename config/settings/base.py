@@ -10,7 +10,16 @@ environ.Env.read_env(BASE_DIR / ".env")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 LOCAL_APPS = ["common", "accounts", "galleries", "blog", "contact", "videos"]
-THIRD_PARTY_APPS = ["modeltranslation", "rest_framework", "rest_framework_simplejwt", "corsheaders"]
+
+THIRD_PARTY_APPS = [
+    "modeltranslation",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "corsheaders",
+    "cloudinary_storage",
+    "cloudinary",
+]
+
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
