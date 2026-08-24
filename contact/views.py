@@ -1,7 +1,10 @@
 from rest_framework import generics, permissions, throttling
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import ContactMessage
 from .serializers import *
 from rest_framework import viewsets, permissions
+
 
 class ContactThrottle(throttling.AnonRateThrottle):
     scope = "contact"
@@ -15,7 +18,20 @@ class ContactMessageCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         ip = self.request.META.get("REMOTE_ADDR")
-        serializer.save(ip_address=ip)
+        instance = serializer.save(ip_address=ip)
+
+        send_mail(
+            subject=f"Nova poruka s kontakt forme — {instance.name}",
+            message=(
+                f"Ime: {instance.name}\n"
+                f"Email: {instance.email}\n\n"
+                f"Poruka:\n{instance.message}"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.EMAIL_HOST_USER],
+            fail_silently=True,
+        )
+
 
 class ContactMessageAdminViewSet(viewsets.ModelViewSet):
     queryset = ContactMessage.objects.all()
