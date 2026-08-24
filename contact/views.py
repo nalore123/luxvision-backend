@@ -21,18 +21,18 @@ class ContactMessageCreateView(generics.CreateAPIView):
         instance = serializer.save(ip_address=ip)
 
         send_mail(
-            subject=f"Nova poruka s kontakt forme — {instance.name}",
+            subject=f"Nova poruka s kontakt forme — {instance.first_name} {instance.last_name}",
             message=(
-                f"Ime: {instance.name}\n"
-                f"Email: {instance.email}\n\n"
+                f"Ime i prezime: {instance.first_name} {instance.last_name}\n"
+                f"Email: {instance.email}\n"
+                f"Telefon: {instance.phone or '—'}\n\n"
                 f"Poruka:\n{instance.message}"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[settings.EMAIL_HOST_USER],
             fail_silently=True,
         )
-
-
+        
 class ContactMessageAdminViewSet(viewsets.ModelViewSet):
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageAdminSerializer
