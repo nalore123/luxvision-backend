@@ -1,5 +1,5 @@
+import requests
 from rest_framework import generics, permissions, throttling
-from django.core.mail import send_mail
 from django.conf import settings
 from .models import ContactMessage
 from .serializers import *
@@ -20,19 +20,30 @@ class ContactMessageCreateView(generics.CreateAPIView):
         ip = self.request.META.get("REMOTE_ADDR")
         instance = serializer.save(ip_address=ip)
 
-        send_mail(
-            subject=f"Nova poruka s kontakt forme — {instance.first_name} {instance.last_name}",
-            message=(
-                f"Ime i prezime: {instance.first_name} {instance.last_name}\n"
-                f"Email: {instance.email}\n"
-                f"Telefon: {instance.phone or '—'}\n\n"
-                f"Poruka:\n{instance.message}"
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.EMAIL_HOST_USER],
-            fail_silently=False,
-        )
-        
+        try:
+            requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": "LUX Vision <onboarding@resend.dev>",
+                    "to": [settings.CONTACT_RECIPIENT_EMAIL],
+                    "subject": f"Nova poruka s kontakt forme — {instance.first_name} {instance.last_name}",
+                    "text": (
+                        f"Ime i prezime: {instance.first_name} {instance.last_name}\n"
+                        f"Email: {instance.email}\n"
+                        f"Telefon: {instance.phone or '—'}\n\n"
+                        f"Poruka:\n{instance.message}"
+                    ),
+                },
+                timeout=10,
+            )
+        except requests.RequestException:
+            pass
+
+
 class ContactMessageAdminViewSet(viewsets.ModelViewSet):
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageAdminSerializer

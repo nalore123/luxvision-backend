@@ -35,6 +35,9 @@ EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
 
+RESEND_API_KEY = env("RESEND_API_KEY")
+CONTACT_RECIPIENT_EMAIL = "lkosic.photo@gmail.com"
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
