@@ -30,7 +30,7 @@ class ContactMessageCreateView(generics.CreateAPIView):
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[settings.EMAIL_HOST_USER],
-            fail_silently=True,
+            fail_silently=False,
         )
         
 class ContactMessageAdminViewSet(viewsets.ModelViewSet):
