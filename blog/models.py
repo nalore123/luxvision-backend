@@ -3,6 +3,7 @@ from django.db import models
 from common.models import SEOModelMixin
 import bleach
 from common.validators import validate_image_size
+from common.utils import generate_unique_slug
 
 ALLOWED_TAGS = [
     "p", "br", "strong", "em", "u", "h2", "h3", "h4",
@@ -39,6 +40,11 @@ class BlogPost(SEOModelMixin, models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        if not self.slug_hr:
+            self.slug_hr = generate_unique_slug(self, self.title_hr, slug_field_name="slug_hr")
+        if not self.slug_en:
+            self.slug_en = generate_unique_slug(self, self.title_en, slug_field_name="slug_en")
+
         self.content = bleach.clean(
             self.content,
             tags=ALLOWED_TAGS,

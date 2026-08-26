@@ -17,6 +17,11 @@ class BlogPostDetailSerializer(serializers.ModelSerializer):
         ]
 
 class BlogPostWriteSerializer(serializers.ModelSerializer):
+    title_hr = serializers.CharField(max_length=200, allow_blank=False)
+    title_en = serializers.CharField(max_length=200, allow_blank=False)
+    content_hr = serializers.CharField(allow_blank=False)
+    content_en = serializers.CharField(allow_blank=False)
+
     class Meta:
         model = BlogPost
         fields = [

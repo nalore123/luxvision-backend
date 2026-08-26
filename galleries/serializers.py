@@ -5,7 +5,7 @@ from .models import Gallery, Image
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["id", "image", "alt_text", "order"]
+        fields = ["id", "image", "alt_text", "order", "width", "height"]
 
 
 class GalleryListSerializer(serializers.ModelSerializer):
@@ -37,6 +37,9 @@ class ReorderItemSerializer(serializers.Serializer):
     order = serializers.IntegerField(min_value=0)
 
 class GalleryWriteSerializer(serializers.ModelSerializer):
+    title_hr = serializers.CharField(max_length=200, allow_blank=False)
+    title_en = serializers.CharField(max_length=200, allow_blank=False)
+
     class Meta:
         model = Gallery
         fields = [
