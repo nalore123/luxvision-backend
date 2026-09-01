@@ -9,7 +9,7 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-LOCAL_APPS = ["common", "accounts", "galleries", "blog", "contact", "videos"]
+LOCAL_APPS = ["common", "accounts", "galleries", "blog", "contact", "videos", "sitesettings"]
 
 THIRD_PARTY_APPS = [
     "modeltranslation",
